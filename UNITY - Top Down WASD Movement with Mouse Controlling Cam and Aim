@@ -1,0 +1,74 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class TopDownPlayerController : MonoBehaviour
+{
+    public float moveSpeed = 5;
+
+    private Rigidbody rigid;
+
+    private Vector3 moveInput;
+    private Vector3 moveVelocity;
+    private Vector3 moveFor;
+    private Vector3 moveSide;
+
+    private Camera mainCamera;
+    
+    //SEE THE GUN CODE IN MY UNITY REP \/
+    public GunController theGun;
+    //SEE THE GUN CODE IN MY UNITY REP /\
+
+    void Start()
+    {
+        rigid = GetComponent<Rigidbody>();
+        mainCamera = FindObjectOfType<Camera>();
+    }
+
+    void Update()
+    {
+        moveFor = transform.forward * Input.GetAxisRaw("Vertical");
+        moveSide = transform.right * Input.GetAxisRaw("Horizontal");
+
+        moveInput = moveFor + moveSide;
+
+        Ray cameraRay = mainCamera.ScreenPointToRay(Input.mousePosition);
+        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+        
+        float rayLength;
+
+        if (groundPlane.Raycast(cameraRay, out rayLength))
+        {
+            Vector3 pointToLook = cameraRay.GetPoint(rayLength);
+            Debug.DrawLine(cameraRay.origin, pointToLook, Color.blue);
+
+            transform.LookAt(new Vector3(pointToLook.x, transform.position.y, pointToLook.z));
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            moveSpeed = 8;
+        } else if (Input.GetKeyUp(KeyCode.LeftShift)) {
+            moveSpeed = 5;
+        }
+
+        moveVelocity = moveInput * moveSpeed;
+        
+        //SEE THE GUN CODE IN MY UNITY REP \/
+        if (Input.GetMouseButtonDown(0))
+        {
+            theGun.isFiring = true;
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            theGun.isFiring = false;
+        }
+        //SEE THE GUN CODE IN MY UNITY REP /\
+    }
+
+    void FixedUpdate()
+    {
+        rigid.velocity = moveVelocity;
+    }
+}
