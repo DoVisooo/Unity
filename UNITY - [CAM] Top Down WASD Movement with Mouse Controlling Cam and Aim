@@ -1,0 +1,23 @@
+using UnityEngine;
+using System.Collections;
+
+public class CameraController : MonoBehaviour
+{
+    private Vector3 cameraTarget;
+    private Transform target;
+    public float turnSpeed = 90.0f;
+
+    void Start()
+    {
+        target = GameObject.FindGameObjectWithTag("Player").transform;
+        cameraTarget = new Vector3(this.target.position.x, transform.position.y, this.target.position.z - 5);
+    }
+
+    void FixedUpdate()
+    {
+        transform.position = Vector3.Lerp(transform.position, cameraTarget, Time.deltaTime * 8);
+        cameraTarget = Quaternion.AngleAxis(Input.GetAxis("Mouse X") * turnSpeed, Vector3.up) * cameraTarget;
+        transform.position = target.position + cameraTarget;
+        transform.LookAt(target.position);
+    }
+}
