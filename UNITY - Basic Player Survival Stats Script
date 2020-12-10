@@ -1,0 +1,48 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerStats : MonoBehaviour
+{
+    public float maxHP, maxHunger, maxThirst;
+    private float hunger, thirst, HP;
+    public float hungerIncrease, thirstIncrease;
+
+    void Start()
+    {
+        HP = maxHP;
+    }
+
+    void Update()
+    {
+        HungerAndThirst();
+
+        if (HP <= 0)
+        {
+            Death();
+        }
+
+        print("Hunger: " + hunger + "\nThirst: " + thirst);
+    }
+
+    public void HungerAndThirst()
+    {
+        hunger += hungerIncrease * Time.deltaTime;
+        thirst += thirstIncrease * Time.deltaTime;
+
+        if (hunger >= maxHunger)
+        {
+            Death();
+        }
+
+        if (thirst >= maxThirst)
+        {
+            Death();
+        }
+    }
+
+    public void Death()
+    {
+        print("Player is DEAD!");
+    }
+}
